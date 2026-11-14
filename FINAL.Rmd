@@ -1,0 +1,80 @@
+---
+title: "FINAL"
+author: "YONAS TESSEMA"
+date: "2026-11-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#install.packages("svglite")
+```
+
+```{r}
+library(ggplot2)
+library(readxl)
+
+```
+
+```{r}
+sleepFinal <- read_xlsx("FINAL.xlsx",sheet="Minuet")
+sleepFinal <- cbind(sleepFinal,Abstinence=c("Before","Before","Before","Before","Before","Before","Before",
+                                            "After","After","After","After","After","After","After",
+                                            "After","After","After","After","After","After","After"))
+```
+
+```{r}
+#sleepFinal <- sleepFinal %>%
+            #  mutate(sleep = sleep/60) 
+           
+```
+
+## BOX PLOT MEAN TIME BEFOR AND AFTER ABSTINENCE PERIOD
+```{r}
+  sleepFinal$Abstinence <- factor(sleepFinal$Abstinence, levels = c("Before", "After"))
+powerPoint <- ggplot(data = sleepFinal, aes(x = Abstinence, y = sleep, fill = Abstinence, color = Abstinence))+
+              geom_boxplot( color = "black")+
+              theme(axis.text.x = element_text(face = "bold",size = 20))+
+              theme(axis.text.y = element_text(face = "bold",size = 20))+
+              theme_bw()+
+              labs(x="Period",y="Sleep Time")
+powerPoint
+ggsave("box.png",powerPoint)
+```
+
+## LINE GRAPH TO SHOW SLEEP DURATION THROUGH THE TWO PERIODS
+```{r}
+sleepFinal$Day <- as.Date(sleepFinal$Day)
+sleepFinal$Abstinence <- factor(sleepFinal$Abstinence, levels = c("Before", "After"))
+powerPointLine <- ggplot(data = sleepFinal, aes(x = as.Date(Day), y =sleep,colour = Abstinence)) +
+                      geom_line(aes(group = 1), linewidth = 1) +
+                      geom_point(color="blue",size = 2)+
+                      scale_x_date(date_breaks = "3 day", date_labels = "%m/%d") +
+                      labs(x = "Day", y = "Sleep Duration (hr)") +
+                      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1,face = "bold"))+
+                      theme(axis.text.y = element_text(face = "bold"))
+powerPointLine
+ggsave("line.png",powerPointLine)
+```
+
+## BAR GRAPH TO SHOW WITHDRAWAL SYSMPTOM THROUGH THE TWO PERIODS 
+```{r}
+powerPointBar <-ggplot(data=sleepFinal,aes(x=Day,y=Withdrawal))+
+                geom_col(fill="maroon")+
+                scale_x_date(date_breaks = "1 day", date_labels = "%m/%d")+
+                theme_bw()+
+                theme(axis.text.x = element_text(angle = 45, vjust = 0.5,
+                                                    hjust = 1,colour = "Navy",face = "bold"))
+powerPointBar
+ggsave("bar.png",powerPointBar)
+          
+```
+
+## STATISTICAL ANALYSIS 
+```{r}
+t.test(sleep~Abstinence,sleepFinal)
+```
+
