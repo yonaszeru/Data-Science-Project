@@ -7,5 +7,5 @@ R packages and functions used to process data :
   t.test() : R functions to do two sample t test 
   ggsave() : R function to save graphs into .png and .svc file 
 
-Finally, the process data and graphs are used to make powerpoint
+Finally, the processed data and graphs are used to make powerpoint
 poster 
